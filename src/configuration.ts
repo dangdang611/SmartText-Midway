@@ -6,9 +6,11 @@ import { join } from 'path';
 // import { DefaultErrorFilter } from './filter/default.filter';
 // import { NotFoundFilter } from './filter/notfound.filter';
 import { ReportMiddleware } from './middleware/report.middleware';
+import * as orm from '@midwayjs/typeorm';
 
 @Configuration({
   imports: [
+    orm, // 引入orm组件
     koa,
     validate,
     {
