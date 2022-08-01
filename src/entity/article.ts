@@ -1,12 +1,10 @@
-import { Entity, Column, PrimaryColumn, CreateDateColumn } from 'typeorm';
+import { Entity, Column } from 'typeorm';
+import { BaseEntity } from '../common/BaseEntity';
 //定义一个实体类
 @Entity('article')
-export class Article {
+export class Article extends BaseEntity {
   // 定义一个主键，每个实体类必须要主键
   // 添加数据列，属性类型会自动推断
-  @PrimaryColumn()
-  articleId: number;
-
   @Column()
   title: string;
 
@@ -27,7 +25,4 @@ export class Article {
 
   @Column()
   tag: number;
-
-  @CreateDateColumn()
-  time: string;
 }

@@ -1,11 +1,13 @@
-import { Inject, Controller, Get, Query, Body, Post } from '@midwayjs/decorator';
+import { Inject, Controller, Post, Get, Body, Query } from '@midwayjs/decorator';
 import { Context } from '@midwayjs/koa';
+import { BaseController } from '../common/BaseController';
+import { BaseService } from '../common/BaseService';
 import { User } from '../entity/user';
 import { IResult } from '../interface';
 import { UserService } from '../service/user.service';
 
-@Controller('/api')
-export class UserController {
+@Controller('/user')
+export class UserController extends BaseController<User> {
   @Inject()
   ctx: Context;
 
@@ -13,21 +15,22 @@ export class UserController {
   @Inject()
   userService: UserService;
 
+  getService(): BaseService<User> {
+    return this.userService;
+  }
+
   @Post('/insert_user')
   async insertUser(@Body() user: User): Promise<IResult> {
-    const result = await this.userService.insertUser(user);
-    return { success: true, message: 'OK', data: result };
+    return super.create(user);
   }
 
   @Get('/get_user')
-  async getUser(@Query('userCount') userCount): Promise<IResult> {
-    const user = await this.userService.getUser(userCount);
-    return { success: true, message: 'OK', data: user };
+  async getUser(@Query('userCount') userCount: string): Promise<IResult> {
+    return super.findByOther({ userCount });
   }
 
   @Get('/del_user')
-  async delUser(@Query('userCount') userCount): Promise<IResult> {
-    const user = await this.userService.delUser(userCount);
-    return { success: true, message: 'OK', data: user };
+  async delUser(@Query('userCount') userCount: string): Promise<IResult> {
+    return super.del({ userCount });
   }
 }
