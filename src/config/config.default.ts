@@ -27,4 +27,39 @@ export default {
       },
     },
   },
+
+  // 添加jwt 配置
+  jwt: {
+    secret: 'setscrew',
+    expiresIn: 60 * 60 * 24,
+  },
+
+  // 添加redis 配置
+  redis: {
+    client: {
+      host: '127.0.0.1',
+      password: 'root',
+      port: 6379,
+      db: 0,
+    },
+  },
+
+  // 添加安全拦截配置
+  app: {
+    security: {
+      prefix: '/api', // 表示以/api开头的接口地址需要被拦截
+      ignore: ['/api/login', '/api/register', '/api/logout'], // 此数组中的接口地址排除在外，不会被拦截
+    },
+  },
+
+  // 添加swagger配置
+  swagger: {
+    // 配置swagger能够支持bearer验证
+    auth: { authType: 'bearer' },
+  },
+
+  // CORS配置
+  cors: {
+    credentials: false,
+  },
 } as MidwayConfig;

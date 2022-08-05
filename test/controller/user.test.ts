@@ -21,7 +21,7 @@ describe('test/controller/user.test.ts', () => {
   });
 
   // insert User
-  it('should POST /user/insert_user', async () => {
+  it('should POST /api/user/insert_user', async () => {
     o = new User();
     Object.assign(o, {
       userCount: '13378950954',
@@ -29,21 +29,21 @@ describe('test/controller/user.test.ts', () => {
       avatarUrl: '2.png',
     });
 
-    const result = await createHttpRequest(app).post('/user/insert_user').send(o);
+    const result = await createHttpRequest(app).post('/api/user/insert_user').send(o);
 
     expect(result.status).toBe(200);
     // expect(result.text).toBe('Success!')
   });
 
   // findByUserCount
-  it('should Get /user/get_user', async () => {
-    const result = await createHttpRequest(app).get('/user/get_user?userCount=' + o.userCount);
+  it('should Get /api/user/get_user', async () => {
+    const result = await createHttpRequest(app).get('/api/user/get_user?userCount=' + o.userCount);
     expect(result.status).toBe(200);
   });
 
   // delete User
-  it('should Get /user/del_user', async () => {
-    const result = await createHttpRequest(app).get('/user/del_user?userCount=' + o.userCount);
+  it('should Get /api/user/del_user', async () => {
+    const result = await createHttpRequest(app).get('/api/user/del_user?userCount=' + o.userCount);
     expect(result.status).toBe(200);
   });
 });

@@ -1,7 +1,7 @@
 import { Controller, Inject } from '@midwayjs/decorator';
 import { ArticleService } from '../service/article.service';
 
-@Controller('/article')
+@Controller('/api/article')
 export class ArticleController {
   @Inject()
   articleService: ArticleService;

@@ -1,5 +1,4 @@
 import { Body, Get, Post, Query } from '@midwayjs/decorator';
-import { IResult } from '../interface';
 import { BaseEntity } from './BaseEntity';
 import { BaseService } from './BaseService';
 
@@ -12,32 +11,35 @@ export abstract class BaseController<T extends BaseEntity> {
   abstract getService(): BaseService<T>;
 
   @Post('/create')
-  async create(@Body() obj: T): Promise<IResult> {
-    const result = await this.getService().insert(obj);
-    return { success: true, message: 'OK', data: result };
+  async create(@Body() obj: T): Promise<T> {
+    return await this.getService().insert(obj);
   }
 
   @Get('/findById')
-  async findById(@Query('id') id: string): Promise<IResult> {
-    const result = await this.getService().findById(id);
-    return { success: true, message: 'OK', data: result };
+  async findById(@Query('id') id: string): Promise<T> {
+    return await this.getService().findById(id);
   }
 
   @Get('/findByOther')
-  async findByOther(@Query('key') key): Promise<IResult> {
-    const result = await this.getService().findByOther(key);
-    return { success: true, message: 'OK', data: result };
+  async findByOther(@Query('key') key): Promise<T> {
+    return await this.getService().findByOther(key);
   }
 
   @Get('/del')
-  async del(@Query('key') key): Promise<IResult> {
-    const result = await this.getService().del(key);
-    return { success: true, message: 'OK', data: result };
+  async del(@Query('key') key): Promise<boolean> {
+    let result = await this.getService().del(key);
+    return result.affected ? true : false;
   }
 
   @Post('/update')
-  async update(@Body() obj: T): Promise<IResult> {
-    const result = this.getService().insert(obj);
-    return { success: true, message: 'OK', data: result };
+  async update(@Body() obj: T): Promise<T> {
+    return this.getService().insert(obj);
   }
 }
+
+// 没有使用中间件的写法，需要自己每次返回结果之前组织格式
+// @Post('/update')
+// async update(@Body() obj: T): Promise<IResult> {
+//   const result = this.getService().insert(obj);
+//   return { success: true, message: 'OK', data: result };
+// }

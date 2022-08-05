@@ -1,8 +1,10 @@
+import { UserContext } from './common/UserContext';
+
 /**
  * @description User-Service parameters
  */
-export interface IResult {
-  success: boolean;
-  message: string;
-  data: any;
+declare module '@midwayjs/core' {
+  interface Context {
+    userContext: UserContext;
+  }
 }

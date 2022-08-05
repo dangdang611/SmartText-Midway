@@ -14,4 +14,9 @@ export class UserService extends BaseService<User> {
   getModel(): Repository<User> {
     return this.userModel;
   }
+
+  // 通过用户账号查找用户
+  async findByUserCount(userCount: string): Promise<User> {
+    return super.findByOther({ userCount });
+  }
 }

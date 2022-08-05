@@ -4,13 +4,24 @@ import * as validate from '@midwayjs/validate';
 import * as info from '@midwayjs/info';
 import { join } from 'path';
 // import { DefaultErrorFilter } from './filter/default.filter';
-// import { NotFoundFilter } from './filter/notfound.filter';
+import { NotFoundFilter } from './filter/notfound.filter';
 import { ReportMiddleware } from './middleware/report.middleware';
 import * as orm from '@midwayjs/typeorm';
+import * as jwt from '@midwayjs/jwt';
+import * as redis from '@midwayjs/redis';
+import * as swagger from '@midwayjs/swagger';
+import * as crossDomain from '@midwayjs/cross-domain';
+import { FormatMiddleware } from './middleware/format.middleware';
+import { DefaultErrorFilter } from './filter/default.filter';
+import { SecurityMiddleware } from './middleware/security.middleware';
 
 @Configuration({
   imports: [
-    orm, // 引入orm组件
+    crossDomain,
+    swagger,
+    redis, //注册redis组件
+    jwt, // 注册jwt组件
+    orm, // 注册orm组件
     koa,
     validate,
     {
@@ -26,8 +37,8 @@ export class ContainerLifeCycle {
 
   async onReady() {
     // add middleware
-    this.app.useMiddleware([ReportMiddleware]);
+    this.app.useMiddleware([SecurityMiddleware, ReportMiddleware, FormatMiddleware]);
     // add filter
-    // this.app.useFilter([NotFoundFilter, DefaultErrorFilter]);
+    this.app.useFilter([NotFoundFilter, DefaultErrorFilter]);
   }
 }

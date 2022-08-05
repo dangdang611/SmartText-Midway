@@ -16,8 +16,8 @@ export abstract class BaseService<T extends BaseEntity> {
   }
 
   // 根据其他字段查询数据
-  async findByOther(where: FindOptionsWhere<T>): Promise<T[]> {
-    return this.getModel().find({ where });
+  async findByOther(where: FindOptionsWhere<T>): Promise<T> {
+    return this.getModel().findOne({ where });
   }
 
   //根据关键字进行删除操作

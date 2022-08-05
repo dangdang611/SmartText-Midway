@@ -1,12 +1,14 @@
 import { Inject, Controller, Post, Get, Body, Query } from '@midwayjs/decorator';
 import { Context } from '@midwayjs/koa';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@midwayjs/swagger';
 import { BaseController } from '../common/BaseController';
 import { BaseService } from '../common/BaseService';
 import { User } from '../entity/user';
-import { IResult } from '../interface';
 import { UserService } from '../service/user.service';
 
-@Controller('/user')
+@ApiBearerAuth()
+@ApiTags(['user'])
+@Controller('/api/user')
 export class UserController extends BaseController<User> {
   @Inject()
   ctx: Context;
@@ -19,18 +21,21 @@ export class UserController extends BaseController<User> {
     return this.userService;
   }
 
+  @ApiResponse({ type: User })
   @Post('/insert_user')
-  async insertUser(@Body() user: User): Promise<IResult> {
+  async insertUser(@Body() user: User): Promise<User> {
     return super.create(user);
   }
 
+  @ApiResponse({ type: User })
   @Get('/get_user')
-  async getUser(@Query('userCount') userCount: string): Promise<IResult> {
+  async getUser(@Query('userCount') userCount: string): Promise<User> {
     return super.findByOther({ userCount });
   }
 
+  @ApiResponse({ type: Boolean })
   @Get('/del_user')
-  async delUser(@Query('userCount') userCount: string): Promise<IResult> {
+  async delUser(@Query('userCount') userCount: string): Promise<boolean> {
     return super.del({ userCount });
   }
 }
