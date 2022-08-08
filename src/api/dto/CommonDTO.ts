@@ -24,3 +24,21 @@ export class LogoutDTO {
   @ApiProperty({ example: '112', description: '用户ID' })
   userId: string;
 }
+
+export class getArticleDTO {
+  @ApiProperty({ example: '6798547768709120', description: '用户Id' })
+  userId: string;
+  @ApiProperty({ example: 1, description: '当前页' })
+  page: number;
+  @ApiProperty({ example: 3, description: '条数' })
+  size: number;
+}
+
+export class commentDTO {
+  @ApiProperty({ example: '18613932106', description: '评论的用户账号' })
+  userCount: string;
+  @ApiProperty({ example: '12', description: '评论的文章Id' })
+  articleId: string;
+  @ApiProperty({ example: '哈哈哈哈哈哈', description: '评论的内容' })
+  content: string;
+}

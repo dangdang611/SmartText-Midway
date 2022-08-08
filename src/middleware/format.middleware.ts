@@ -13,7 +13,7 @@ export class FormatMiddleware implements IMiddleware<Context, NextFunction> {
     };
   }
   match(ctx) {
-    return ctx.path.indexOf('/api') === 0;
+    return ctx.path.indexOf('/') === 0;
   }
 
   static getName(): string {

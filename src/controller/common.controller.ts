@@ -52,12 +52,12 @@ export class CommonController {
     const flag = decrypt(body.userPassword, user.userPassword);
     Assert.isTrue(flag, ErrorCode.UN_ERROR, '账号或者密码错误');
 
-    const uc: UserContext = new UserContext(user.id, user.userCount, user.userPassword);
+    const uc: UserContext = new UserContext(user.userCount, user.userCount, user.userPassword);
 
     // 使用用户信息作为payload来生成token
     const at = await this.jwtUtil.sign({ ...uc });
     // 生成键值key:前缀+userId+token
-    const key = Constant.TOKEN + ':' + user.id + ':';
+    const key = Constant.TOKEN + ':' + user.userCount + ':';
     //过期时间
     const expiresIn = this.jwtConfig.expiresIn;
 
@@ -74,27 +74,37 @@ export class CommonController {
   @ApiResponse({ type: RegisterVO })
   @Validate()
   @Post('/register', { description: '注册' })
-  async register(@Body() body: RegisterDTO): Promise<User> {
+  async register(@Body() body: RegisterDTO): Promise<RegisterVO> {
     const user = await this.userService.findByUserCount(body.phone);
     Assert.isNull(user, ErrorCode.UN_ERROR, '用户已存在');
 
+    // 密码加密
     const password = encrypt(body.password);
     let u = Object.assign(new User(), {
+      id: new SnowflakeIdGenerate().generate().toString(),
       userCount: body.phone,
       userPassword: password,
       avatarUrl: '1.png',
     });
-    const result = await this.userService.insert(u);
-    return result;
+
+    let vo = new RegisterVO();
+    vo.user = await this.userService.insert(u);
+    return vo;
   }
 
   // @ApiResponse()用于标注API的返回值；
   @ApiResponse({ type: LogoutVO })
   @Validate()
   @Post('/logout', { description: '注销' })
-  async logout(@Body() body: LogoutDTO): Promise<boolean> {
+  async logout(@Body() body: LogoutDTO): Promise<LogoutVO> {
     const key = 'token:' + body.userId;
-    this.cacheUtil.del(key);
-    return true;
+    let vo = new LogoutVO();
+    if (this.cacheUtil.del(key)) {
+      vo.message = '注销成功';
+    } else {
+      vo.message = '注销失败';
+    }
+
+    return vo;
   }
 }

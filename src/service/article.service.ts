@@ -1,25 +1,17 @@
 import { Provide } from '@midwayjs/decorator';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Repository } from 'typeorm';
+import { BaseService } from '../common/BaseService';
 import { Article } from '../entity/article';
 
+// @Provide` 表示这个类将会由系统自动实例化，在使用的时候，只需要使用@Inject`注入就可以了
 @Provide()
-export class ArticleService {
+export class ArticleService extends BaseService<Article> {
+  // @InjectEntityModel` 注入实体模型数据库操作工具
   @InjectEntityModel(Article)
   articleModel: Repository<Article>;
 
-  // // 插入文章
-  // insertArticle(article): Promise<Article> {
-  //   return this.articleModel.save(article);
-  // }
-
-  // // 获取文章详情
-  // getArticleDetail(articleId: string): Promise<Article> {
-  //   return this.articleModel.findOneBy({ articleId });
-  // }
-
-  // //删除文章
-  // delArticle(articleId: string): Promise<DeleteResult> {
-  //   return this.articleModel.delete({ articleId });
-  // }
+  getModel(): Repository<Article> {
+    return this.articleModel;
+  }
 }

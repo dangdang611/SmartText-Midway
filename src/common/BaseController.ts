@@ -1,4 +1,5 @@
 import { Body, Get, Post, Query } from '@midwayjs/decorator';
+import { FindOptionsOrder, FindOptionsSelect, FindOptionsWhere } from 'typeorm';
 import { BaseEntity } from './BaseEntity';
 import { BaseService } from './BaseService';
 
@@ -12,21 +13,33 @@ export abstract class BaseController<T extends BaseEntity> {
 
   @Post('/create')
   async create(@Body() obj: T): Promise<T> {
-    return await this.getService().insert(obj);
+    return this.getService().insert(obj);
   }
 
   @Get('/findById')
-  async findById(@Query('id') id: string): Promise<T> {
-    return await this.getService().findById(id);
+  async findById(@Query('id') id: FindOptionsWhere<T>): Promise<T> {
+    return this.getService().findById(id);
   }
 
   @Get('/findByOther')
-  async findByOther(@Query('key') key): Promise<T> {
-    return await this.getService().findByOther(key);
+  async findByOther(@Query('key') key: FindOptionsWhere<T>): Promise<T> {
+    return this.getService().findByOther(key);
+  }
+
+  @Get('/findAll')
+  async findAll(
+    @Query('key')
+    order: FindOptionsOrder<T>,
+    skip: number = 0,
+    take: number = 3,
+    where?: FindOptionsWhere<T> | FindOptionsWhere<T>[],
+    select?: FindOptionsSelect<T>
+  ): Promise<T[]> {
+    return this.getService().findAll(order, skip, take, where, select);
   }
 
   @Get('/del')
-  async del(@Query('key') key): Promise<boolean> {
+  async del(@Query('key') key: FindOptionsWhere<T>): Promise<boolean> {
     let result = await this.getService().del(key);
     return result.affected ? true : false;
   }
