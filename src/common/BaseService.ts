@@ -7,16 +7,12 @@ export abstract class BaseService<T extends BaseEntity> {
 
   // 插入操作
   async insert(obj: T) {
-    console.log('要插入的数据是：');
-    console.log(obj);
-
     let result = await this.getModel().save(obj);
     return result;
   }
 
   //根据Id查询数据
   async findById(id: FindOptionsWhere<T>): Promise<T> {
-    console.log(id);
     return this.getModel().findOneBy(id);
   }
 
@@ -40,6 +36,24 @@ export abstract class BaseService<T extends BaseEntity> {
       skip,
       take,
     });
+  }
+
+  // 根据字段查询并统计所有数据
+  async findAllAndCount(
+    order: FindOptionsOrder<T>,
+    where?: FindOptionsWhere<T> | FindOptionsWhere<T>[],
+    select?: FindOptionsSelect<T>
+  ): Promise<[T[], number]> {
+    return this.getModel().findAndCount({
+      select,
+      where,
+      order,
+    });
+  }
+
+  // 根据字段统计数量
+  async count(where: FindOptionsWhere<T>): Promise<number> {
+    return this.getModel().countBy(where);
   }
 
   //根据关键字进行删除操作

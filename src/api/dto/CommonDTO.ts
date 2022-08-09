@@ -42,3 +42,10 @@ export class commentDTO {
   @ApiProperty({ example: '哈哈哈哈哈哈', description: '评论的内容' })
   content: string;
 }
+
+export class getLikeDTO {
+  @ApiProperty({ example: '18613932106', description: 'id' })
+  id: string;
+  @ApiProperty({ example: 1, description: '加/减' })
+  isAdd: string;
+}

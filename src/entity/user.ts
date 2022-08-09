@@ -15,6 +15,10 @@ export class User extends BaseEntity {
   userCount: string;
 
   @Column()
+  @ApiProperty({ example: '当当', description: '用户昵称' })
+  userName: string;
+
+  @Column()
   @ApiProperty({ example: 'lidan0611', description: '用户密码' })
   userPassword: string;
 }

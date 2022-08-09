@@ -11,9 +11,13 @@ export class Article extends BaseEntity {
   @Column()
   title: string;
 
-  @ApiProperty({ example: '小白', description: '发布人' })
+  @ApiProperty({ example: '009', description: '发布人ID' })
   @Column()
   authorId: string;
+
+  @ApiProperty({ example: '小白', description: '发布人' })
+  @Column()
+  authorName: string;
 
   @ApiProperty({ example: '哒哒哒嗒嗒嗒', description: '文章内容' })
   @Column()

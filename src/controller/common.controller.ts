@@ -52,21 +52,24 @@ export class CommonController {
     const flag = decrypt(body.userPassword, user.userPassword);
     Assert.isTrue(flag, ErrorCode.UN_ERROR, '账号或者密码错误');
 
-    const uc: UserContext = new UserContext(user.userCount, user.userCount, user.userPassword);
+    const uc: UserContext = new UserContext(user.id, user.userCount, user.userPassword);
 
     // 使用用户信息作为payload来生成token
     const at = await this.jwtUtil.sign({ ...uc });
     // 生成键值key:前缀+userId+token
-    const key = Constant.TOKEN + ':' + user.userCount + ':';
+    const key = Constant.TOKEN + ':' + user.id + ':' + at;
     //过期时间
     const expiresIn = this.jwtConfig.expiresIn;
 
     // 将token存入redis中
-    this.cacheUtil.set(key, at, 'EX', expiresIn);
+    this.cacheUtil.set(key, JSON.stringify(uc), 'EX', expiresIn);
 
     const vo = new LoginVO();
     vo.accessToken = at;
     vo.expiresIn = expiresIn;
+    vo.userCount = user.userCount;
+    vo.userId = user.id;
+    vo.userAvatar = user.avatarUrl;
     return vo;
   }
 
@@ -85,6 +88,7 @@ export class CommonController {
       userCount: body.phone,
       userPassword: password,
       avatarUrl: '1.png',
+      userName: body.phone,
     });
 
     let vo = new RegisterVO();

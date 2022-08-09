@@ -12,6 +12,12 @@ export class LoginVO {
   accessToken: string;
   @ApiProperty({ description: '过期时间' })
   expiresIn: number;
+  @ApiProperty({ description: '用户Id' })
+  userCount: string;
+  @ApiProperty({ description: '用户Id' })
+  userId: string;
+  @ApiProperty({ description: '用户头像' })
+  userAvatar: string;
 }
 
 export class RegisterVO {
@@ -24,10 +30,21 @@ export class LogoutVO {
   message: string;
 }
 
-export class getArticleVO {
+export class GetArticleDetailVO {
   @ApiProperty({ description: '获取文章资讯信息' })
-  articles: Article[];
+  article: Article;
 
-  @ApiProperty({ description: '文章资讯总数' })
-  total: number;
+  @ApiProperty({ description: '评论数' })
+  commentNum: number;
+}
+
+export class CountVO {
+  @ApiProperty({ description: '获赞数量' })
+  likeNum: number;
+
+  @ApiProperty({ description: '粉丝数量' })
+  fansNum: number;
+
+  @ApiProperty({ description: '关注数量' })
+  attentionNum: number;
 }

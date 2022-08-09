@@ -26,16 +26,31 @@ export abstract class BaseController<T extends BaseEntity> {
     return this.getService().findByOther(key);
   }
 
+  @Get('/count')
+  async count(@Query('key') key: FindOptionsWhere<T>): Promise<number> {
+    return this.getService().count(key);
+  }
+
   @Get('/findAll')
   async findAll(
     @Query('key')
     order: FindOptionsOrder<T>,
-    skip: number = 0,
-    take: number = 3,
+    skip: number,
+    take: number,
     where?: FindOptionsWhere<T> | FindOptionsWhere<T>[],
     select?: FindOptionsSelect<T>
   ): Promise<T[]> {
     return this.getService().findAll(order, skip, take, where, select);
+  }
+
+  @Get('/findAll')
+  async findAllAndCount(
+    @Query('key')
+    order: FindOptionsOrder<T>,
+    where?: FindOptionsWhere<T> | FindOptionsWhere<T>[],
+    select?: FindOptionsSelect<T>
+  ): Promise<[T[], number]> {
+    return this.getService().findAllAndCount(order, where, select);
   }
 
   @Get('/del')

@@ -10,7 +10,7 @@ import { SnowflakeIdGenerate } from '../utils/Snowflake';
 
 @ApiBearerAuth()
 @ApiTags(['attention'])
-@Controller('/attention')
+@Controller('/api/attention')
 export class UserAttentionController extends BaseController<UserAttention> {
   @Inject()
   ctx: Context;
