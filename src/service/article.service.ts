@@ -1,6 +1,6 @@
 import { Provide } from '@midwayjs/decorator';
 import { InjectEntityModel } from '@midwayjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsSelect, Repository } from 'typeorm';
 import { BaseService } from '../common/BaseService';
 import { Article } from '../entity/article';
 
@@ -13,5 +13,16 @@ export class ArticleService extends BaseService<Article> {
 
   getModel(): Repository<Article> {
     return this.articleModel;
+  }
+
+  // 统计用户文章的总访问量
+  async countShowNum(authorId: string): Promise<number> {
+    let select = ['showNum'] as FindOptionsSelect<Article>;
+    let data = await this.findAll({}, null, null, { authorId }, select);
+    let result = 0;
+    data.forEach(el => {
+      result += Number(el.showNum);
+    });
+    return result;
   }
 }

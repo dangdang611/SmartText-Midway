@@ -34,9 +34,9 @@ export abstract class BaseController<T extends BaseEntity> {
   @Get('/findAll')
   async findAll(
     @Query('key')
-    order: FindOptionsOrder<T>,
-    skip: number,
-    take: number,
+    order?: FindOptionsOrder<T>,
+    skip?: number,
+    take?: number,
     where?: FindOptionsWhere<T> | FindOptionsWhere<T>[],
     select?: FindOptionsSelect<T>
   ): Promise<T[]> {
@@ -47,10 +47,12 @@ export abstract class BaseController<T extends BaseEntity> {
   async findAllAndCount(
     @Query('key')
     order: FindOptionsOrder<T>,
+    skip?: number,
+    take?: number,
     where?: FindOptionsWhere<T> | FindOptionsWhere<T>[],
     select?: FindOptionsSelect<T>
   ): Promise<[T[], number]> {
-    return this.getService().findAllAndCount(order, where, select);
+    return this.getService().findAllAndCount(order, skip, take, where, select);
   }
 
   @Get('/del')

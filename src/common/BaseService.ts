@@ -23,9 +23,9 @@ export abstract class BaseService<T extends BaseEntity> {
 
   // 根据字段查询多条数据
   async findAll(
-    order: FindOptionsOrder<T>,
-    skip: number,
-    take: number,
+    order?: FindOptionsOrder<T>,
+    skip?: number,
+    take?: number,
     where?: FindOptionsWhere<T> | FindOptionsWhere<T>[],
     select?: FindOptionsSelect<T>
   ): Promise<T[]> {
@@ -40,7 +40,9 @@ export abstract class BaseService<T extends BaseEntity> {
 
   // 根据字段查询并统计所有数据
   async findAllAndCount(
-    order: FindOptionsOrder<T>,
+    order?: FindOptionsOrder<T>,
+    skip?: number,
+    take?: number,
     where?: FindOptionsWhere<T> | FindOptionsWhere<T>[],
     select?: FindOptionsSelect<T>
   ): Promise<[T[], number]> {
@@ -48,6 +50,8 @@ export abstract class BaseService<T extends BaseEntity> {
       select,
       where,
       order,
+      skip,
+      take,
     });
   }
 

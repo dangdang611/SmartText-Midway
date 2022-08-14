@@ -1,12 +1,13 @@
 import { Inject, Controller, Post, Get, Body, Query } from '@midwayjs/decorator';
 import { Context } from '@midwayjs/koa';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@midwayjs/swagger';
-import { CountVO } from '../api/vo/CommonVO';
+import { CountVO, CountWeekVO } from '../api/vo/CommonVO';
 import { Assert } from '../common/Assert';
 import { BaseController } from '../common/BaseController';
 import { BaseService } from '../common/BaseService';
 import { ErrorCode } from '../common/ErrorCode';
 import { User } from '../entity/user';
+import { ArticleService } from '../service/article.service';
 import { UserService } from '../service/user.service';
 import { UserAttentionService } from '../service/userAttention.service';
 import { encrypt } from '../utils/PasswordEncoder';
@@ -25,6 +26,9 @@ export class UserController extends BaseController<User> {
 
   @Inject()
   attentionService: UserAttentionService;
+
+  @Inject()
+  articleService: ArticleService;
 
   getService(): BaseService<User> {
     return this.userService;
@@ -45,8 +49,8 @@ export class UserController extends BaseController<User> {
 
   @ApiResponse({ type: User })
   @Get('/get_user')
-  async getUser(@Query('userCount') userCount: string): Promise<User> {
-    return super.findByOther({ userCount });
+  async getUser(@Query('userId') userId: string): Promise<User> {
+    return super.findByOther({ id: userId });
   }
 
   @ApiResponse({ type: Boolean })
@@ -62,6 +66,22 @@ export class UserController extends BaseController<User> {
     vo.likeNum = await super.count({ id });
     vo.fansNum = await this.attentionService.count({ attention_userId: id });
     vo.attentionNum = await this.attentionService.count({ userId: id });
+    vo.writeNum = await this.articleService.count({ authorId: id });
+    vo.showNum = await this.articleService.countShowNum(id);
+    return vo;
+  }
+
+  @ApiResponse({ type: CountVO })
+  @Get('/count_week_user')
+  async countWeekUser(@Query('userId') id: string): Promise<CountWeekVO> {
+    let vo = new CountWeekVO();
+    vo.likeAddNums = [1, 2, 3, 4, 5, 6, 7];
+    vo.likeNums = await super.count({ id });
+    vo.fansAddNums = [1, 2, 3, 4, 5, 6, 7];
+    vo.fansNums = await this.attentionService.count({ attention_userId: id });
+    vo.showAddNums = [1, 2, 3, 4, 5, 6, 7];
+    vo.showNums = await this.articleService.countShowNum(id);
+
     return vo;
   }
 }

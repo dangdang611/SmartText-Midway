@@ -47,6 +47,7 @@ export class CommonController {
   @Post('/login', { description: '登陆' })
   async login(@Body() body: LoginDTO): Promise<LoginVO> {
     const user = await this.userService.findByUserCount(body.userCount);
+    console.log(body);
     Assert.notNull(user, ErrorCode.UN_ERROR, '账号或者密码错误');
 
     const flag = decrypt(body.userPassword, user.userPassword);
@@ -68,6 +69,7 @@ export class CommonController {
     vo.accessToken = at;
     vo.expiresIn = expiresIn;
     vo.userCount = user.userCount;
+    vo.userName = user.userName;
     vo.userId = user.id;
     vo.userAvatar = user.avatarUrl;
     return vo;

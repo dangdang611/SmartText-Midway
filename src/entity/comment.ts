@@ -18,6 +18,10 @@ export class Comment extends BaseEntity {
   @Column()
   content: string;
 
+  @ApiProperty({ example: '123', description: '回复的对象' })
+  @Column()
+  targetId: string;
+
   @ApiProperty({ example: 12, description: '评论点赞数' })
   @Column()
   likeNum: number;
