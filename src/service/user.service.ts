@@ -19,4 +19,15 @@ export class UserService extends BaseService<User> {
   async findByUserCount(userCount: string): Promise<User> {
     return super.findByOther({ userCount });
   }
+
+  async get() {
+    let result = await this.userModel.query(
+      'select * from likes where DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= date(createTime);'
+    );
+    let countShowNum = 0;
+    for (let i = 0; i < result.length; i++) {
+      countShowNum += result[i].showNum;
+    }
+    console.log(countShowNum);
+  }
 }

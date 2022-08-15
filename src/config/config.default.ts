@@ -5,6 +5,7 @@ import { Comment } from '../entity/comment';
 import { UserAttention } from '../entity/userAttention';
 import { CheckingArticle } from '../entity/checkingArticle';
 import { FailArticle } from '../entity/failArticle';
+import { Likes } from '../entity/likes';
 
 export default {
   // use for cookie sign key, should change to your own and keep security
@@ -28,7 +29,7 @@ export default {
         logging: false,
 
         // 配置实体模型
-        entities: [User, Article, Comment, UserAttention, CheckingArticle, FailArticle],
+        entities: [User, Article, Comment, UserAttention, CheckingArticle, FailArticle, Likes],
       },
     },
   },

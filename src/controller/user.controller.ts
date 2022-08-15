@@ -8,6 +8,7 @@ import { BaseService } from '../common/BaseService';
 import { ErrorCode } from '../common/ErrorCode';
 import { User } from '../entity/user';
 import { ArticleService } from '../service/article.service';
+import { LikesService } from '../service/likes.service';
 import { UserService } from '../service/user.service';
 import { UserAttentionService } from '../service/userAttention.service';
 import { encrypt } from '../utils/PasswordEncoder';
@@ -30,6 +31,12 @@ export class UserController extends BaseController<User> {
   @Inject()
   articleService: ArticleService;
 
+  @Inject()
+  likesService: LikesService;
+
+  @Inject()
+  userAttentionService: UserAttentionService;
+
   getService(): BaseService<User> {
     return this.userService;
   }
@@ -45,6 +52,14 @@ export class UserController extends BaseController<User> {
     // 密码加密
     user.userPassword = encrypt(user.userPassword);
     return super.create(user);
+  }
+
+  @ApiResponse({ type: User })
+  @Post('/update_user')
+  async updatetUser(@Body() user): Promise<User> {
+    const u = await this.userService.findByUserCount(user.userCount);
+    let newUser = { ...u, ...user };
+    return super.create(newUser);
   }
 
   @ApiResponse({ type: User })
@@ -75,13 +90,13 @@ export class UserController extends BaseController<User> {
   @Get('/count_week_user')
   async countWeekUser(@Query('userId') id: string): Promise<CountWeekVO> {
     let vo = new CountWeekVO();
-    vo.likeAddNums = [1, 2, 3, 4, 5, 6, 7];
+    vo.likeAddNums = await this.likesService.getWeekData();
     vo.likeNums = await super.count({ id });
-    vo.fansAddNums = [1, 2, 3, 4, 5, 6, 7];
+    vo.fansAddNums = await this.userAttentionService.getWeekData();
     vo.fansNums = await this.attentionService.count({ attention_userId: id });
-    vo.showAddNums = [1, 2, 3, 4, 5, 6, 7];
+    vo.showAddNums = [4, 0, 2, 2, 5, 3, 7];
     vo.showNums = await this.articleService.countShowNum(id);
-
+    console.log(vo);
     return vo;
   }
 }

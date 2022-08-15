@@ -1,44 +1,47 @@
 import { Provide } from '@midwayjs/decorator';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Repository } from 'typeorm';
-import { getArticleDTO } from '../api/dto/CommonDTO';
 import { BaseService } from '../common/BaseService';
-import { UserAttention } from '../entity/userAttention';
+import { Likes } from '../entity/likes';
+import { SnowflakeIdGenerate } from '../utils/Snowflake';
 import { WeeksDate } from '../utils/WeeksDate';
 
 // @Provide` 表示这个类将会由系统自动实例化，在使用的时候，只需要使用@Inject`注入就可以了
 @Provide()
-export class UserAttentionService extends BaseService<UserAttention> {
+export class LikesService extends BaseService<Likes> {
   // @InjectEntityModel` 注入实体模型数据库操作工具
-  @InjectEntityModel(UserAttention)
-  userAttentionModel: Repository<UserAttention>;
+  @InjectEntityModel(Likes)
+  likeModel: Repository<Likes>;
 
-  getModel(): Repository<UserAttention> {
-    return this.userAttentionModel;
+  getModel(): Repository<Likes> {
+    return this.likeModel;
   }
 
-  async getAttentionUsers(info: getArticleDTO): Promise<String[]> {
-    let result = await super.findAll({ id: 'ASC' }, info.page, info.size, { userId: info.userId });
-    let attentions = [];
+  //保存
+  async save(articleId, userId) {
+    let like = new Likes();
+    like.id = new SnowflakeIdGenerate().generate().toString();
+    like.articleId = articleId;
+    like.like_userId = userId;
+    return await super.insert(like);
+  }
 
-    result.forEach(val => {
-      attentions.push(val.attention_userId);
-    });
-
-    return attentions;
+  //保存
+  async delete(articleId, userId) {
+    return await super.del({ like_userId: userId, articleId: articleId });
   }
 
   //获取七天的记录
   async getWeekData() {
     //获取七天的数据
-    let result = await this.userAttentionModel.query(
+    let result = await this.likeModel.query(
       `
         SELECT
           DATE_FORMAT( createTime, '%Y-%m-%d' ) days,
           count(*) count 
         FROM
           
-        ( SELECT * FROM userattention
+        ( SELECT * FROM likes
         WHERE DATE_SUB( CURDATE( ), INTERVAL 7 DAY ) <= date( createTime) ) as l
         
         GROUP BY

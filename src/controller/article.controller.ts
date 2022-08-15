@@ -12,6 +12,7 @@ import { ArticleService } from '../service/article.service';
 import { CheckingArticleService } from '../service/checkingArticle.service';
 import { CommentService } from '../service/comment.service';
 import { FailArticleService } from '../service/failArticle.service';
+import { LikesService } from '../service/likes.service';
 import { UserAttentionService } from '../service/userAttention.service';
 import { SnowflakeIdGenerate } from '../utils/Snowflake';
 
@@ -37,6 +38,9 @@ export class ArticleController extends BaseController<Article> {
 
   @Inject()
   commentService: CommentService;
+
+  @Inject()
+  likesService: LikesService;
 
   getService(): BaseService<Article> {
     return this.articleService;
@@ -153,13 +157,17 @@ export class ArticleController extends BaseController<Article> {
   @ApiResponse({ type: Article })
   @Get('/giveLike_article')
   async giveLikeComment(@Query() info: getLikeDTO): Promise<Article> {
-    let atricle = await super.findById({ id: info.id });
+    let article = await super.findById({ id: info.id });
     if (info.isAdd == '1') {
-      atricle.likeNum += 1;
+      article.likeNum += 1;
+      //记录到点赞表中
+      await this.likesService.save(article.id, info.userId);
     } else {
-      atricle.likeNum -= 1;
+      article.likeNum -= 1;
+      // 清楚点赞表数据
+      await this.likesService.delete(article.id, info.userId);
     }
-    return super.create(atricle);
+    return super.create(article);
   }
 
   @ApiResponse({ type: getLikeDTO })
@@ -183,5 +191,13 @@ export class ArticleController extends BaseController<Article> {
     let result = await super.del({ id: articleId });
     if (!result) throw new CommonException(500, '删除失败');
     return '删除成功';
+  }
+
+  @ApiResponse({ type: String })
+  @Get('/add_showNum')
+  async addShowNum(@Query('articleId') articleId: string): Promise<Article> {
+    let article = await super.findById({ id: articleId });
+    article.showNum += 1;
+    return super.create(article);
   }
 }
