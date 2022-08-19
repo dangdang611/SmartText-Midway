@@ -43,8 +43,8 @@ export default {
   // 添加redis 配置
   redis: {
     client: {
-      host: '127.0.0.1',
-      password: '0611',
+      host: '39.99.80.36',
+      password: '@ab!735(pkdu&',
       port: 6379,
       db: 0,
     },
@@ -54,7 +54,19 @@ export default {
   app: {
     security: {
       prefix: '/api', // 表示以/api开头的接口地址需要被拦截
-      ignore: ['/api/login', '/api/register', '/api/logout'], // 此数组中的接口地址排除在外，不会被拦截
+      ignore: [
+        '/api/login',
+        '/api/register',
+        '/api/logout',
+        '/api/article/get_hotArticle',
+        '/api/article/get_newArticle',
+        '/api/article/get_otherArticle',
+        '/api/article/get_articleDetail',
+        '/api/article/get_hotRank',
+        '/api/article/get_autoComplete',
+        '/api/article/get_search',
+        '/api/user/get_user',
+      ], // 此数组中的接口地址排除在外，不会被拦截
     },
   },
 
