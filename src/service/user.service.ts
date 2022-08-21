@@ -21,7 +21,7 @@ export class UserService extends BaseService<User> {
   }
 
   async get() {
-    let result = await this.userModel.query(
+    const result = await this.userModel.query(
       'select * from likes where DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= date(createTime);'
     );
     let countShowNum = 0;

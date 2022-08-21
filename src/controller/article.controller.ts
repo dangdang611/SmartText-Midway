@@ -62,10 +62,10 @@ export class ArticleController extends BaseController<Article> {
   @ApiResponse({ type: Article })
   @Get('/get_attentionArticle')
   async getAttentionArticle(@Query() info: getArticleDTO): Promise<Article[]> {
-    let attentions = await this.userAttentionService.getAttentionUsers(info);
+    const attentions = await this.userAttentionService.getAttentionUsers(info);
 
     // 关注的所有用户
-    let authorIds = [];
+    const authorIds = [];
     attentions.forEach(async val => {
       authorIds.push({ authorId: val });
     });
@@ -83,7 +83,7 @@ export class ArticleController extends BaseController<Article> {
   @Get('/get_likeArticle')
   async getLikeArticle(@Query() info: getArticleDTO): Promise<Article[]> {
     // 查询为原创的文章
-    let result = await super.findAll({ id: 'ASC' }, info.page * info.size, info.size, { tag: '原创' });
+    const result = await super.findAll({ id: 'ASC' }, info.page * info.size, info.size, { tag: '原创' });
     return result;
   }
 
@@ -91,7 +91,7 @@ export class ArticleController extends BaseController<Article> {
   @Get('/get_hotArticle')
   async getHotArticle(@Query() info: getArticleDTO): Promise<Article[]> {
     // 查询热门文章（点赞量）
-    let result = await super.findAll({ likeNum: 'DESC' }, info.page * info.size, info.size);
+    const result = await super.findAll({ likeNum: 'DESC' }, info.page * info.size, info.size);
     return result;
   }
 
@@ -99,7 +99,7 @@ export class ArticleController extends BaseController<Article> {
   @Get('/get_newArticle')
   async getNewArticle(@Query() info: getArticleDTO): Promise<Article[]> {
     // 查询新文章
-    let result = await super.findAll({ createTime: 'DESC' }, info.page * info.size, info.size);
+    const result = await super.findAll({ createTime: 'DESC' }, info.page * info.size, info.size);
     return result;
   }
 
@@ -107,7 +107,7 @@ export class ArticleController extends BaseController<Article> {
   @Get('/get_otherArticle')
   async getOtherAticle(@Query() info: getArticleDTO): Promise<Article[]> {
     // 查询其他文章
-    let result = await super.findAll({}, info.page * info.size, info.size);
+    const result = await super.findAll({}, info.page * info.size, info.size);
     return result;
   }
 
@@ -115,7 +115,7 @@ export class ArticleController extends BaseController<Article> {
   @Get('/get_myArticle')
   async getMyArticle(@Query() info: getArticleDTO): Promise<GetArticleInfoVO> {
     // 查询我的文章
-    let vo = new GetArticleInfoVO();
+    const vo = new GetArticleInfoVO();
     // 已发布
     vo.publish = await super.findAll({ createTime: 'DESC' }, info.page * info.size, info.size, {
       authorId: info.userId,
@@ -149,16 +149,16 @@ export class ArticleController extends BaseController<Article> {
   @Get('/get_hotRank')
   async getHotRank(@Query() info: getArticleDTO): Promise<Article[]> {
     // 查询热门文章（浏览量）
-    let select = ['id', 'title'] as FindOptionsSelect<Article>;
-    let result = await super.findAll({ showNum: 'DESC' }, info.page * info.size, info.size, {}, select);
+    const select = ['id', 'title'] as FindOptionsSelect<Article>;
+    const result = await super.findAll({ showNum: 'DESC' }, info.page * info.size, info.size, {}, select);
     return result;
   }
 
   @ApiResponse({ type: Article })
   @Get('/giveLike_article')
   async giveLikeComment(@Query() info: getLikeDTO): Promise<Article> {
-    let article = await super.findById({ id: info.id });
-    if (info.isAdd == '1') {
+    const article = await super.findById({ id: info.id });
+    if (info.isAdd === '1') {
       article.likeNum += 1;
       //记录到点赞表中
       await this.likesService.save(article.id, info.userId);
@@ -188,7 +188,7 @@ export class ArticleController extends BaseController<Article> {
   @ApiResponse({ type: String })
   @Get('/del_articel')
   async delArticle(@Query('articleId') articleId: string): Promise<string> {
-    let result = await super.del({ id: articleId });
+    const result = await super.del({ id: articleId });
     if (!result) throw new CommonException(500, '删除失败');
     return '删除成功';
   }
@@ -196,7 +196,7 @@ export class ArticleController extends BaseController<Article> {
   @ApiResponse({ type: String })
   @Get('/add_showNum')
   async addShowNum(@Query('articleId') articleId: string): Promise<Article> {
-    let article = await super.findById({ id: articleId });
+    const article = await super.findById({ id: articleId });
     article.showNum += 1;
     return super.create(article);
   }

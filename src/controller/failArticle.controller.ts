@@ -46,7 +46,7 @@ export class FailArticleController extends BaseController<FailArticle> {
   @ApiResponse({ type: String })
   @Get('/del_articel')
   async delArticle(@Query('articleId') articleId: string) {
-    let result = await super.del({ id: articleId });
+    const result = await super.del({ id: articleId });
     if (!result) throw new CommonException(500, '删除失败');
     return '删除成功';
   }

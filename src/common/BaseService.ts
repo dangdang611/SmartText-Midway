@@ -7,7 +7,7 @@ export abstract class BaseService<T extends BaseEntity> {
 
   // 插入操作
   async insert(obj: T) {
-    let result = await this.getModel().save(obj);
+    const result = await this.getModel().save(obj);
     return result;
   }
 

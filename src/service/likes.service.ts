@@ -19,22 +19,22 @@ export class LikesService extends BaseService<Likes> {
 
   //保存
   async save(articleId, userId) {
-    let like = new Likes();
+    const like = new Likes();
     like.id = new SnowflakeIdGenerate().generate().toString();
     like.articleId = articleId;
     like.like_userId = userId;
     return await super.insert(like);
   }
 
-  //保存
+  //删除
   async delete(articleId, userId) {
     return await super.del({ like_userId: userId, articleId: articleId });
   }
 
   //获取七天的记录
-  async getWeekData() {
+  async getWeekData(userId: string) {
     //获取七天的数据
-    let result = await this.likeModel.query(
+    const result = await this.likeModel.query(
       `
         SELECT
           DATE_FORMAT( createTime, '%Y-%m-%d' ) days,
@@ -42,15 +42,16 @@ export class LikesService extends BaseService<Likes> {
         FROM
           
         ( SELECT * FROM likes
-        WHERE DATE_SUB( CURDATE( ), INTERVAL 7 DAY ) <= date( createTime) ) as l
+        WHERE DATE_SUB( CURDATE( ), INTERVAL 7 DAY ) <= date( createTime) and like_userId= ${userId}) as l
         
         GROUP BY
           days;`
     );
+    console.log(result);
 
-    let data = [];
+    const data = [];
     for (let i = 0; i < 8; i++) {
-      let dateKey = new WeeksDate().getPreDays(i).toString().slice(0, 10);
+      const dateKey = new WeeksDate().getPreDays(i).toString().slice(0, 10);
       result.forEach(val => {
         if (val.days === dateKey) {
           data[7 - i] = Number(val.count);

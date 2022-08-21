@@ -33,14 +33,14 @@ export class UserAttentionController extends BaseController<UserAttention> {
 
   @ApiResponse({ type: String })
   @Get('/getAttention')
-  async getAttention(@Query() info: getArticleDTO): Promise<String[]> {
+  async getAttention(@Query() info: getArticleDTO): Promise<string[]> {
     return await this.userAttentionService.getAttentionUsers(info);
   }
 
   @ApiResponse({ type: UserAttention })
   @Post('/delAttention')
   async delAttention(@Body() body: UserAttention): Promise<string> {
-    let result = await super.del({ userId: body.userId, attention_userId: body.attention_userId });
+    const result = await super.del({ userId: body.userId, attention_userId: body.attention_userId });
     if (!result) throw new CommonException(500, '删除失败');
     return '删除成功';
   }

@@ -25,7 +25,7 @@ export class LikeController extends BaseController<Likes> {
   @ApiResponse({ type: String })
   @Get('/isLike')
   async isLike(@Query() info: LikeDTO): Promise<boolean> {
-    let result = await super.findByOther({ like_userId: info.userId, articleId: info.articleId });
+    const result = await super.findByOther({ like_userId: info.userId, articleId: info.articleId });
     console.log(result);
     if (result != null) return true;
     else return false;

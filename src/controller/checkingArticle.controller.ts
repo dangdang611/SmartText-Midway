@@ -55,7 +55,7 @@ export class CheckingArticleController extends BaseController<CheckingArticle> {
   @ApiResponse({ type: String })
   @Get('/del_articel')
   async delArticle(@Query('articleId') articleId: string): Promise<string> {
-    let result = await super.del({ id: articleId });
+    const result = await super.del({ id: articleId });
     if (!result) throw new CommonException(500, '删除失败');
     return '删除成功';
   }
@@ -63,7 +63,7 @@ export class CheckingArticleController extends BaseController<CheckingArticle> {
   @ApiResponse({ type: String })
   @Get('/pass_articel')
   async passArticle(@Query('articleId') articleId: string): Promise<CheckingArticle> {
-    let article = await super.findById({ id: articleId });
+    const article = await super.findById({ id: articleId });
     await super.del({ id: articleId });
     return await this.articleService.insert(article);
   }
@@ -71,7 +71,7 @@ export class CheckingArticleController extends BaseController<CheckingArticle> {
   @ApiResponse({ type: String })
   @Get('/fail_articel')
   async failArticle(@Query('articleId') articleId: string): Promise<CheckingArticle> {
-    let article = await super.findById({ id: articleId });
+    const article = await super.findById({ id: articleId });
     await super.del({ id: articleId });
     return await this.failArticleService.insert(article);
   }

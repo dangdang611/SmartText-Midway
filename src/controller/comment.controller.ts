@@ -35,12 +35,12 @@ export class CommentController extends BaseController<Comment> {
   @Post('/add_comment')
   async addComment(@Body() info: commentDTO): Promise<Comment> {
     console.log(info);
-    let comment = Object.assign(new Comment(), info);
+    const comment = Object.assign(new Comment(), info);
     comment.id = new SnowflakeIdGenerate().generate().toString();
     comment.likeNum = 0;
 
     //更新文章表中的数据
-    let article = await this.articleService.findById({ id: info.articleId });
+    const article = await this.articleService.findById({ id: info.articleId });
     article.commentNum += 1;
     this.articleService.insert(article);
 
@@ -50,8 +50,8 @@ export class CommentController extends BaseController<Comment> {
   @ApiResponse({ type: getLikeDTO })
   @Get('/giveLike_comment')
   async giveLikeComment(@Query() info: getLikeDTO) {
-    let comment = await super.findById({ id: info.id });
-    if (info.isAdd == '1') {
+    const comment = await super.findById({ id: info.id });
+    if (info.isAdd === '1') {
       comment.likeNum += 1;
     } else {
       comment.likeNum -= 1;
@@ -62,23 +62,22 @@ export class CommentController extends BaseController<Comment> {
   @Get('/get_comment')
   async getComment(@Query() info: getCommentDTO): Promise<[CommentVO[], number]> {
     console.log(info);
-    let commentsList = await super.findAllAndCount({ createTime: 'DESC' }, info.page * info.size, info.size, {
+    const commentsList = await super.findAllAndCount({ createTime: 'DESC' }, info.page * info.size, info.size, {
       articleId: info.id,
     });
-    let newResult: CommentVO[] = [];
+    const newResult: CommentVO[] = [];
 
     for (let i = 0; i < commentsList[0].length; i++) {
-      let el = commentsList[0][i];
+      const el = commentsList[0][i];
 
-      let user1 = await this.userService.findById({ id: el.userId });
+      const user1 = await this.userService.findById({ id: el.userId });
 
       let user2;
       if (el.targetId) {
         user2 = await this.userService.findById({ id: el.targetId });
       }
 
-      let article;
-      article = await this.articleService.findById({ id: el.articleId });
+      const article = await this.articleService.findById({ id: el.articleId });
 
       let vo = new CommentVO();
       vo = Object.assign(el, new CommentVO());
@@ -94,23 +93,22 @@ export class CommentController extends BaseController<Comment> {
 
   @Get('/get_myComment')
   async getMyComment(@Query() info: getCommentDTO): Promise<[CommentVO[], number]> {
-    let commentsList = await super.findAllAndCount({ createTime: 'DESC' }, info.page * info.size, info.size, {
+    const commentsList = await super.findAllAndCount({ createTime: 'DESC' }, info.page * info.size, info.size, {
       userId: info.id,
     });
-    let newResult: CommentVO[] = [];
+    const newResult: CommentVO[] = [];
 
     for (let i = 0; i < commentsList[0].length; i++) {
-      let el = commentsList[0][i];
+      const el = commentsList[0][i];
 
-      let user1 = await this.userService.findById({ id: el.userId });
+      const user1 = await this.userService.findById({ id: el.userId });
 
       let user2;
       if (el.targetId) {
         user2 = await this.userService.findById({ id: el.targetId });
       }
 
-      let article;
-      article = await this.articleService.findById({ id: el.articleId });
+      const article = await this.articleService.findById({ id: el.articleId });
 
       let vo = new CommentVO();
       vo = Object.assign(el, new CommentVO());

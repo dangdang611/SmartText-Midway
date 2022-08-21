@@ -85,7 +85,7 @@ export class CommonController {
 
     // 密码加密
     const password = encrypt(body.password);
-    let u = Object.assign(new User(), {
+    const u = Object.assign(new User(), {
       id: new SnowflakeIdGenerate().generate().toString(),
       userCount: body.phone,
       userPassword: password,
@@ -93,7 +93,7 @@ export class CommonController {
       userName: body.phone,
     });
 
-    let vo = new RegisterVO();
+    const vo = new RegisterVO();
     vo.user = await this.userService.insert(u);
     return vo;
   }
@@ -104,7 +104,7 @@ export class CommonController {
   @Post('/logout', { description: '注销' })
   async logout(@Body() body: LogoutDTO): Promise<LogoutVO> {
     const key = 'token:' + body.userId;
-    let vo = new LogoutVO();
+    const vo = new LogoutVO();
     if (this.cacheUtil.del(key)) {
       vo.message = '注销成功';
     } else {

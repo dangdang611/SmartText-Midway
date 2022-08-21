@@ -17,9 +17,9 @@ export class UserAttentionService extends BaseService<UserAttention> {
     return this.userAttentionModel;
   }
 
-  async getAttentionUsers(info: getArticleDTO): Promise<String[]> {
-    let result = await super.findAll({ id: 'ASC' }, info.page, info.size, { userId: info.userId });
-    let attentions = [];
+  async getAttentionUsers(info: getArticleDTO): Promise<string[]> {
+    const result = await super.findAll({ id: 'ASC' }, info.page, info.size, { userId: info.userId });
+    const attentions = [];
 
     result.forEach(val => {
       attentions.push(val.attention_userId);
@@ -29,9 +29,9 @@ export class UserAttentionService extends BaseService<UserAttention> {
   }
 
   //获取七天的记录
-  async getWeekData() {
+  async getWeekData(userId: string) {
     //获取七天的数据
-    let result = await this.userAttentionModel.query(
+    const result = await this.userAttentionModel.query(
       `
         SELECT
           DATE_FORMAT( createTime, '%Y-%m-%d' ) days,
@@ -39,15 +39,15 @@ export class UserAttentionService extends BaseService<UserAttention> {
         FROM
           
         ( SELECT * FROM userattention
-        WHERE DATE_SUB( CURDATE( ), INTERVAL 7 DAY ) <= date( createTime) ) as l
+        WHERE DATE_SUB( CURDATE( ), INTERVAL 7 DAY ) <= date( createTime) and attention_userId= ${userId}) as l
         
         GROUP BY
           days;`
     );
 
-    let data = [];
+    const data = [];
     for (let i = 0; i < 8; i++) {
-      let dateKey = new WeeksDate().getPreDays(i).toString().slice(0, 10);
+      const dateKey = new WeeksDate().getPreDays(i).toString().slice(0, 10);
       result.forEach(val => {
         if (val.days === dateKey) {
           data[7 - i] = Number(val.count);

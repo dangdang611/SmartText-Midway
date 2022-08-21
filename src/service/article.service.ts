@@ -17,8 +17,8 @@ export class ArticleService extends BaseService<Article> {
 
   // 统计用户文章的总访问量
   async countShowNum(authorId: string): Promise<number> {
-    let select = ['showNum'] as FindOptionsSelect<Article>;
-    let data = await this.findAll({}, null, null, { authorId }, select);
+    const select = ['showNum'] as FindOptionsSelect<Article>;
+    const data = await this.findAll({}, null, null, { authorId }, select);
     let result = 0;
     data.forEach(el => {
       result += Number(el.showNum);

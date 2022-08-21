@@ -58,7 +58,7 @@ export class UserController extends BaseController<User> {
   @Post('/update_user')
   async updatetUser(@Body() user): Promise<User> {
     const u = await this.userService.findByUserCount(user.userCount);
-    let newUser = { ...u, ...user };
+    const newUser = { ...u, ...user };
     return super.create(newUser);
   }
 
@@ -77,8 +77,8 @@ export class UserController extends BaseController<User> {
   @ApiResponse({ type: CountVO })
   @Get('/count_user')
   async countUser(@Query('userId') id: string): Promise<CountVO> {
-    let vo = new CountVO();
-    vo.likeNum = await super.count({ id });
+    const vo = new CountVO();
+    vo.likeNum = await this.likesService.count({ like_userId: id });
     vo.fansNum = await this.attentionService.count({ attention_userId: id });
     vo.attentionNum = await this.attentionService.count({ userId: id });
     vo.writeNum = await this.articleService.count({ authorId: id });
@@ -89,14 +89,13 @@ export class UserController extends BaseController<User> {
   @ApiResponse({ type: CountVO })
   @Get('/count_week_user')
   async countWeekUser(@Query('userId') id: string): Promise<CountWeekVO> {
-    let vo = new CountWeekVO();
-    vo.likeAddNums = await this.likesService.getWeekData();
-    vo.likeNums = await super.count({ id });
-    vo.fansAddNums = await this.userAttentionService.getWeekData();
+    const vo = new CountWeekVO();
+    vo.likeAddNums = await this.likesService.getWeekData(id);
+    vo.likeNums = await this.likesService.count({ like_userId: id });
+    vo.fansAddNums = await this.userAttentionService.getWeekData(id);
     vo.fansNums = await this.attentionService.count({ attention_userId: id });
     vo.showAddNums = [4, 0, 2, 2, 5, 3, 7];
     vo.showNums = await this.articleService.countShowNum(id);
-    console.log(vo);
     return vo;
   }
 }

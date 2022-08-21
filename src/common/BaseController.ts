@@ -57,7 +57,7 @@ export abstract class BaseController<T extends BaseEntity> {
 
   @Get('/del')
   async del(@Query('key') key: FindOptionsWhere<T>): Promise<boolean> {
-    let result = await this.getService().del(key);
+    const result = await this.getService().del(key);
     return result.affected ? true : false;
   }
 
