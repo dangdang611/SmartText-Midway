@@ -11,6 +11,7 @@ export default {
   // use for cookie sign key, should change to your own and keep security
   keys: '1658994051208_1031',
   koa: {
+    hostname: '0.0.0.0',
     port: 7001,
   },
   // 添加orm配置
