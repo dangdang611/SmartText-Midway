@@ -38,7 +38,7 @@ export class UserAttentionService extends BaseService<UserAttention> {
           count(*) count 
         FROM
           
-        ( SELECT * FROM userattention
+        ( SELECT * FROM userAttention
         WHERE DATE_SUB( CURDATE( ), INTERVAL 7 DAY ) <= date( createTime) and attention_userId= ${userId}) as l
         
         GROUP BY
